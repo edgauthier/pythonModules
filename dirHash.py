@@ -3,6 +3,7 @@
 import sys
 import os
 import hashlib
+from datetime import datetime
 
 def usage():
   print "Usage: dirHash.py <source> [sha1|md5]"
@@ -26,8 +27,17 @@ def main(args):
   if not os.path.exists(source):
     print "Source doesn't exist: %s" % source
 
+  # log start time
+  start = datetime.now();
+  print "Starting: %s" % start
+
   # calculate hashes for all files in the source
   hashDir(source,hash)
+
+  # log finish time
+  finish = datetime.now()
+  print "Finished: %s" % finish
+  print "Total time: %s" % (finish - start)
 
 
 def hashDir(source,hash):
