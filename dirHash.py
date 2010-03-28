@@ -5,55 +5,56 @@ import os
 import hashlib
 from datetime import datetime
 
+# Display command line usage information.
 def usage():
-  print "Usage: dirHash.py <source> [sha1|md5]"
-
+  print "Usage: dirHash.py <directory> [sha1|md5]"
 
 def main(args):
 
-  # get source
-  source = args[0]
+  # get directory
+  directory = args[0]
 
-  # determine hashing algorithm
-  hash = 'sha1'
+  # determine hashing algorithm - default to sha1
+  hashAlg = 'sha1'
   if len(args) > 1:
-    hash = args[1]
+    hashAlg = args[1]
 
-  if not hash in ['md5','sha1']:
+  if not hashAlg in ['md5','sha1']:
     usage()
     return
 
-  # make sure source exists
-  if not os.path.exists(source):
-    print "Source doesn't exist: %s" % source
+  # make sure directory exists
+  if not os.path.exists(directory):
+    print "Directory doesn't exist: %s" % directory
 
   # log start time
   start = datetime.now();
   print "Starting: %s" % start
 
-  # calculate hashes for all files in the source
-  hashDir(source,hash)
+  # calculate hashes for all files in the directory
+  hashDir(directory,hashAlg)
 
   # log finish time
   finish = datetime.now()
   print "Finished: %s" % finish
   print "Total time: %s" % (finish - start)
 
-
-def hashDir(source,hash):
-  for base, dirs, files in os.walk(source):
+# Hash a directory with an optionally specified hash algorithm.
+def hashDir(directory,hashAlg='sha1'):
+  for baseDir, dirs, files in os.walk(directory):
     for file in files:
-      fileName = os.path.join(base, file)
-      print "%s|%s|%s" % (hash,getHashForFile(fileName,hash),fileName)
+      fileName = os.path.join(baseDir, file)
+      print "%s|%s|%s" % (hashAlg,getHashDigestForFile(fileName,hashAlg),fileName)
 
 
-def getHashForFile(fileName, hash='sha1', blockSize=2**8):
+# Returns the hash digest for a file in hex format.
+def getHashDigestForFile(fileName, hashAlg='sha1', blockSize=2**8):
   try:
     f = open(fileName,'rb')
   except:
     return "  *******  Error opening file! *******  "
   else:
-    h = hashlib.new(hash)
+    h = hashlib.new(hashAlg)
     while True:
       data = f.read(blockSize)
       if not data:
@@ -63,6 +64,7 @@ def getHashForFile(fileName, hash='sha1', blockSize=2**8):
     return h.hexdigest()
 
 
+# support running interactively as well as an imported module
 if __name__ == '__main__':
   if len(sys.argv) < 2:
     usage()
