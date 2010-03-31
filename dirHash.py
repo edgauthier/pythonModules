@@ -36,7 +36,7 @@ def processArguments(args):
   directory = args[0]
   if not os.path.exists(directory):
     print "Directory doesn't exist: %s" % directory
-    raise ValueError()
+    raise ValueError('Invalid Directory')
 
   # defaulting to sha1 for our hashing algorithm
   hashAlg = 'sha1'
@@ -45,7 +45,7 @@ def processArguments(args):
 
   if not hashAlg in ['md5','sha1']:
     print "Invalid hash algorithm: %s" % hashAlg
-    raise ValueError()
+    raise ValueError('Invalid Hash Algorithm')
 
   return (directory, hashAlg)
 
