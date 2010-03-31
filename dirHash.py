@@ -20,17 +20,17 @@ def main(args):
   start = datetime.now();
   print "Starting: %s" % start
 
-  # calculate hashes for all files in the directory
-  hashDirectoryContents(directory,hashAlg)
+  printHashDigestForDirectoryContents(directory,hashAlg)
 
   finish = datetime.now()
   print "Finished: %s" % finish
   print "Total time: %s" % (finish - start)
 
 
-# Process command line arguments and return as a tuple
-# first argument is the directory
-# second (optional) argument is the hashing algorithm
+# Process command line arguments and return as a tuple.
+# Raises a ValueError exception if missing of invalid arguments.
+#   First command line argument is the directory
+#   Second (optional) command line argument is the hashing algorithm
 def processArguments(args):
 
   directory = args[0]
@@ -51,7 +51,7 @@ def processArguments(args):
 
 
 # Hash a directory with an optionally specified hash algorithm.
-def hashDirectoryContents(directory,hashAlg='sha1'):
+def printHashDigestForDirectoryContents(directory,hashAlg='sha1'):
   for baseDir, dirs, files in os.walk(directory):
     for file in files:
       fileName = os.path.join(baseDir, file)
