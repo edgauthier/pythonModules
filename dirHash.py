@@ -7,40 +7,51 @@ from datetime import datetime
 
 # Display command line usage information.
 def usage():
-  print "Usage: dirHash.py <directory> [sha1|md5]"
+  print "\nUsage: dirHash.py <directory> [sha1|md5]\n"
+
 
 def main(args):
+  try:
+    directory, hashAlg = processArguments(args)
+  except ValueError:
+    usage()
+    return
 
-  # get directory
+  start = datetime.now();
+  print "Starting: %s" % start
+
+  # calculate hashes for all files in the directory
+  hashDirectoryContents(directory,hashAlg)
+
+  finish = datetime.now()
+  print "Finished: %s" % finish
+  print "Total time: %s" % (finish - start)
+
+
+# Process command line arguments and return as a tuple
+# first argument is the directory
+# second (optional) argument is the hashing algorithm
+def processArguments(args):
+
   directory = args[0]
+  if not os.path.exists(directory):
+    print "Directory doesn't exist: %s" % directory
+    raise ValueError()
 
-  # determine hashing algorithm - default to sha1
+  # defaulting to sha1 for our hashing algorithm
   hashAlg = 'sha1'
   if len(args) > 1:
     hashAlg = args[1]
 
   if not hashAlg in ['md5','sha1']:
-    usage()
-    return
+    print "Invalid hash algorithm: %s" % hashAlg
+    raise ValueError()
 
-  # make sure directory exists
-  if not os.path.exists(directory):
-    print "Directory doesn't exist: %s" % directory
+  return (directory, hashAlg)
 
-  # log start time
-  start = datetime.now();
-  print "Starting: %s" % start
-
-  # calculate hashes for all files in the directory
-  hashDir(directory,hashAlg)
-
-  # log finish time
-  finish = datetime.now()
-  print "Finished: %s" % finish
-  print "Total time: %s" % (finish - start)
 
 # Hash a directory with an optionally specified hash algorithm.
-def hashDir(directory,hashAlg='sha1'):
+def hashDirectoryContents(directory,hashAlg='sha1'):
   for baseDir, dirs, files in os.walk(directory):
     for file in files:
       fileName = os.path.join(baseDir, file)
