@@ -62,9 +62,6 @@ def hashDirectoryContents(directory,hashAlg='sha1'):
 def getHashDigestForFile(fileName, hashAlg='sha1', blockSize=2**8):
   try:
     f = open(fileName,'rb')
-  except:
-    return "  *******  Error opening file! *******  "
-  else:
     h = hashlib.new(hashAlg)
     while True:
       data = f.read(blockSize)
@@ -73,6 +70,8 @@ def getHashDigestForFile(fileName, hashAlg='sha1', blockSize=2**8):
       h.update(data)
     f.close()
     return h.hexdigest()
+  except:
+    return "  *******  Error opening file! *******  "
 
 
 # support running interactively as well as an imported module
