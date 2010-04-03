@@ -10,6 +10,7 @@ def usage():
   print "\nUsage: dirHash.py <directory> [sha1|md5]\n"
 
 
+# Handles processing when run from the command line.
 def main(args):
   try:
     directory, hashAlg = processArguments(args)
