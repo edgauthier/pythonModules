@@ -50,14 +50,18 @@ def processArguments(args):
 
   return (directory, hashAlg)
 
-
-# Hash a directory with an optionally specified hash algorithm.
+# Prints the hash digests for all contents of a directory.
 def printHashDigestForDirectoryContents(directory,hashAlg='sha1'):
+  for fileName, hashDigest in getHashDigestForDirectoryContents(directory,hashAlg):
+    print "%s|%s|%s" % (hashAlg,hashDigest,fileName)
+
+# Generator function to return a tuple containing the file name (with
+# path) and the hash digest for all contents of a directory.
+def getHashDigestForDirectoryContents(directory,hashAlg='sha1'):
   for baseDir, dirs, files in os.walk(directory):
     for file in files:
       fileName = os.path.join(baseDir, file)
-      print "%s|%s|%s" % (hashAlg,getHashDigestForFile(fileName,hashAlg),fileName)
-
+      yield (fileName, getHashDigestForFile(fileName,hashAlg))
 
 # Returns the hash digest for a file in hex format.
 def getHashDigestForFile(fileName, hashAlg='sha1', blockSize=2**8):
