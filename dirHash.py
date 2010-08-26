@@ -6,22 +6,22 @@ import hashlib
 from datetime import datetime
 
 # Display command line usage information.
-def usage():
+def _usage():
   print "\nUsage: dirHash.py <directory> [sha1|md5]\n"
 
 
 # Handles processing when run from the command line.
-def main(args):
+def _main(args):
   try:
-    directory, hashAlg = processArguments(args)
+    directory, hashAlg = _processArguments(args)
   except ValueError:
-    usage()
+    _usage()
     return
 
   start = datetime.now();
   print "Starting: %s" % start
 
-  printHashDigestForDirectoryContents(directory,hashAlg)
+  _printHashDigestForDirectoryContents(directory,hashAlg)
 
   finish = datetime.now()
   print "Finished: %s" % finish
@@ -32,7 +32,7 @@ def main(args):
 # Raises a ValueError exception if missing of invalid arguments.
 #   First command line argument is the directory
 #   Second (optional) command line argument is the hashing algorithm
-def processArguments(args):
+def _processArguments(args):
 
   directory = args[0]
   if not os.path.exists(directory):
@@ -51,7 +51,7 @@ def processArguments(args):
   return (directory, hashAlg)
 
 # Prints the hash digests for all contents of a directory.
-def printHashDigestForDirectoryContents(directory,hashAlg='sha1'):
+def _printHashDigestForDirectoryContents(directory,hashAlg='sha1'):
   for fileName, hashDigest in getHashDigestForDirectoryContents(directory,hashAlg):
     print "%s|%s|%s" % (hashAlg,hashDigest,fileName)
 
@@ -82,11 +82,11 @@ def getHashDigestForFile(fileName, hashAlg='sha1', blockSize=2**8):
 # support running interactively as well as an imported module
 if __name__ == '__main__':
   if len(sys.argv) < 2:
-    usage()
+    _usage()
     sys.exit(2)
 
   try:
-    main(sys.argv[1:])
+    _main(sys.argv[1:])
   except (KeyboardInterrupt, SystemExit):
     print "Exiting..."
 
