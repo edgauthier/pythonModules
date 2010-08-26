@@ -64,6 +64,8 @@ def getHashDigestForDirectoryContents(directory,hashAlg='sha1'):
       yield (fileName, getHashDigestForFile(fileName,hashAlg))
 
 # Returns the hash digest for a file in hex format.
+# Set blockSize to adjust size of data read in and hashed while
+# processing the file.
 def getHashDigestForFile(fileName, hashAlg='sha1', blockSize=2**8):
   try:
     f = open(fileName,'rb')
