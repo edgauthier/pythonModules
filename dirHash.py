@@ -2,7 +2,6 @@
 
 import sys
 import os
-import hashlib
 from datetime import datetime
 from fileHash import getHashDigestForFile
 
