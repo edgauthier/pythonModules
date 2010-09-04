@@ -4,6 +4,7 @@ import sys
 import os
 import hashlib
 from datetime import datetime
+from fileHash import getHashDigestForFile
 
 # Display command line usage information.
 def _usage():
@@ -62,24 +63,6 @@ def getHashDigestForDirectoryContents(directory,hashAlg='sha1'):
     for file in files:
       fileName = os.path.join(baseDir, file)
       yield (fileName, getHashDigestForFile(fileName,hashAlg))
-
-# Returns the hash digest for a file in hex format.
-# Set blockSize to adjust size of data read in and hashed while
-# processing the file.
-def getHashDigestForFile(fileName, hashAlg='sha1', blockSize=2**8):
-  try:
-    f = open(fileName,'rb')
-    h = hashlib.new(hashAlg)
-    while True:
-      data = f.read(blockSize)
-      if not data:
-        break
-      h.update(data)
-    f.close()
-    return h.hexdigest()
-  except:
-    return "  *******  Error opening file! *******  "
-
 
 # support running interactively as well as an imported module
 if __name__ == '__main__':
