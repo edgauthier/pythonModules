@@ -1,0 +1,97 @@
+#!/usr/bin/python
+
+import sys
+import os
+from datetime import datetime
+from fileHash import getHashDigestForFile
+
+# Display command line usage information.
+def _usage():
+  print "\nUsage: downloadTest.py <url> [count]\n"
+
+#TODO expose keepFiles flag
+def _downloadAndHashFiles(url, count, keepFiles=False):
+  baseFileName,fileExt = _extractFileNameAndExt(url)
+  hashes = {}
+
+  try:
+    for i in range(count):
+      downloadName = "{0}-{1}.{2}".format(baseFileName, i+1, fileExt)
+      print "Downloading {0}...".format(downloadName)
+      _downloadFile(url, downloadName)
+      if os.path.exists(downloadName):
+        hashes[downloadName] = getHashDigestForFile(downloadName)
+        if not keepFiles:
+          os.remove(downloadName)
+      else:
+        hashes[downloadName] = "File not downloaded"
+  except (KeyboardInterrupt):
+    print "\r\nDownload canceled.\r\n"
+
+  print "\r\nIntegrity Report"
+  for fileName in sorted(hashes):
+    print "{0}|{1}".format(fileName, hashes[fileName])
+
+def _extractFileNameAndExt(url):
+  #TODO extract base file name from url
+  baseFileName = "file"
+  #TODO extract extension from url
+  fileExt = "zip"
+  return (baseFileName, fileExt)
+
+def _downloadFile(url, fileName):
+  #TODO switch to use native python
+  downloadCommand = "curl -# -o {0} http://test.egauthier.net/LaunchThemes.zip".format(fileName)
+  os.system(downloadCommand)
+
+# Handles processing when run from the command line.
+def _main(args):
+  try:
+    url, count = _processArguments(args)
+  except ValueError:
+    _usage()
+    return
+
+  start = datetime.now();
+  print "\r\nStarting: %s\r\n" % start
+  
+  _downloadAndHashFiles(url, count)
+
+  finish = datetime.now()
+  print "\r\nFinished: %s" % finish
+  print "Total time: %s\r\n" % (finish - start)
+
+# Process command line arguments and return as a tuple.
+# Raises a ValueError exception if missing of invalid arguments.
+#   First command line argument is the url
+#   Second (optional) command line argument is the number of times to
+#   downoad the file at the url
+def _processArguments(args):
+  url = args[0]
+  #TODO validate URL
+
+  # defaulting to sha1 for our hashing algorithm
+  count = 5 
+  if len(args) > 1:
+    try:  
+      count = int(args[1])
+    except ValueError:
+      count = 0
+    
+  if count <= 0:
+    print "Please enter a valid count greater than 0."
+    raise ValueError('Invalid Count')
+
+  return (url, count)
+
+# support running interactively as well as an imported module
+if __name__ == '__main__':
+  if len(sys.argv) < 2:
+    _usage()
+    sys.exit(2)
+
+  try:
+    _main(sys.argv[1:])
+  except (KeyboardInterrupt, SystemExit):
+    print "Exiting..."
+
