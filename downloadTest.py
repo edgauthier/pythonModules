@@ -46,8 +46,14 @@ def _extractFileNameAndExt(url):
   return (baseFileName, fileExt)
 
 def _downloadFile(url, fileName):
-  #TODO Add progress info
-  urlretrieve(url, fileName)
+  urlretrieve(url, fileName, _downloadProgress)
+  # print an extra line after the download progress
+  print ""
+
+def _downloadProgress(blockCount, blockSize, totalSize):
+  percentage = int(((1.0 * blockCount * blockSize) / totalSize) * 100)
+  percentage = 100 if percentage > 100.0 else percentage
+  print "{0:>3}%\r".format(percentage),
 
 # Handles processing when run from the command line.
 def _main(args):
