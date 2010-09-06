@@ -4,6 +4,9 @@ import sys
 import os
 from datetime import datetime
 from fileHash import getHashDigestForFile
+from urlparse import urlparse
+import posixpath
+from urllib import urlretrieve
 
 # Display command line usage information.
 def _usage():
@@ -16,7 +19,7 @@ def _downloadAndHashFiles(url, count, keepFiles=False):
 
   try:
     for i in range(count):
-      downloadName = "{0}-{1}.{2}".format(baseFileName, i+1, fileExt)
+      downloadName = "{0}-{1}{2}".format(baseFileName, i+1, fileExt)
       hashes[downloadName] = _downloadAndHashFile(url, downloadName, keepFiles)
   except (KeyboardInterrupt):
     print "\r\nDownload canceled.\r\n"
@@ -37,16 +40,14 @@ def _downloadAndHashFile(url, fileName, keepFile=False):
   return result
 
 def _extractFileNameAndExt(url):
-  #TODO extract base file name from url
-  baseFileName = "file"
-  #TODO extract extension from url
-  fileExt = "zip"
+  filePath = urlparse(url)[2]
+  fileName = posixpath.basename(filePath)
+  baseFileName, fileExt = posixpath.splitext(fileName)
   return (baseFileName, fileExt)
 
 def _downloadFile(url, fileName):
-  #TODO switch to use native python
-  downloadCommand = "curl -# -o {0} {1}".format(fileName, url)
-  os.system(downloadCommand)
+  #TODO Add progress info
+  urlretrieve(url, fileName)
 
 # Handles processing when run from the command line.
 def _main(args):
