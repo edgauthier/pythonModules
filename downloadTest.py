@@ -17,20 +17,24 @@ def _downloadAndHashFiles(url, count, keepFiles=False):
   try:
     for i in range(count):
       downloadName = "{0}-{1}.{2}".format(baseFileName, i+1, fileExt)
-      print "Downloading {0}...".format(downloadName)
-      _downloadFile(url, downloadName)
-      if os.path.exists(downloadName):
-        hashes[downloadName] = getHashDigestForFile(downloadName)
-        if not keepFiles:
-          os.remove(downloadName)
-      else:
-        hashes[downloadName] = "File not downloaded"
+      hashes[downloadName] = _downloadAndHashFile(url, downloadName, keepFiles)
   except (KeyboardInterrupt):
     print "\r\nDownload canceled.\r\n"
 
   print "\r\nIntegrity Report"
   for fileName in sorted(hashes):
     print "{0}|{1}".format(fileName, hashes[fileName])
+
+def _downloadAndHashFile(url, fileName, keepFile=False):
+  print "Downloading {0}...".format(fileName)
+  _downloadFile(url, fileName)
+  if os.path.exists(fileName):
+    result = getHashDigestForFile(fileName)
+    if not keepFile:
+      os.remove(fileName)
+  else:
+    result = "File not downloaded"
+  return result
 
 def _extractFileNameAndExt(url):
   #TODO extract base file name from url
@@ -41,7 +45,7 @@ def _extractFileNameAndExt(url):
 
 def _downloadFile(url, fileName):
   #TODO switch to use native python
-  downloadCommand = "curl -# -o {0} http://test.egauthier.net/LaunchThemes.zip".format(fileName)
+  downloadCommand = "curl -# -o {0} {1}".format(fileName, url)
   os.system(downloadCommand)
 
 # Handles processing when run from the command line.
