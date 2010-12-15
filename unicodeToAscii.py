@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+
+print sys.argv
 import sys,codecs
 from datetime import datetime
 
