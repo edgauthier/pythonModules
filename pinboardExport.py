@@ -5,6 +5,7 @@ import getopt
 import urllib
 import urllib2
 import cookielib
+import getpass
 
 class PinboardExporter(object):
     """Logs into pinboard.in and exports bookmarks in various formats."""
@@ -64,10 +65,14 @@ def options(args):
             usage()
             sys.exit(2)
 
-    #TODO prompt for missing parameters instead of exiting
-    if not username or not password or not formats:
-        usage()
-        sys.exit(2)
+    # prompt for missing parameters if missing
+    if not username:
+        username = raw_input('Username: ')
+    if not password:
+        password = getpass.getpass('Password: ')
+    if not formats:
+        formats = raw_input('Formats: ')
+        formats = set(formats.split(','))
 
     return (username, password, formats)
 
