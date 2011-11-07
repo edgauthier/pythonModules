@@ -1,28 +1,38 @@
 #!/usr/bin/python
 
 import sys
+import os
 import getopt
+import getpass
 import urllib
 import urllib2
 import cookielib
-import getpass
-import os
 
 class PinboardExporter(object):
-    """Logs into pinboard.in and exports bookmarks in various formats."""
+    """
+    Authenticates with the pinboard.in website and exports bookmarks in
+    various formats.
+    """
+
     def __init__(self, username, password):
+        """
+        Stores the username and password, and then authenticates with the
+        pinboard.in website.
+        """
         self.username = username
         self.password = password
-        self._connect()
+        self._authenticate()
     
-    def export_bookmarks(self, bookmark_formats = set(['json']), directory = os.getcwd()):
-        """Exports bookmarks in each of the formats specified"""
+    def export_bookmarks(self, bookmark_formats = set(['json']), directory = None):
+        """
+        Exports bookmarks in each of the formats specified. The default
+        format is json and available format types include: """ 
         # sanitize formats - these will be used directly
         formats = PinboardExporter._VALID_FORMATS & bookmark_formats
         for f in formats: self._download_bookmarks(directory, f)
 
-    def _connect(self):
-        """Connects to the pinboard.in website."""
+    def _authenticate(self):
+        """Authenticates to the pinboard.in website."""
         cj = cookielib.CookieJar()
         self.site = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
         login_data = urllib.urlencode({'username' : self.username, 'password' : self.password})
@@ -33,8 +43,9 @@ class PinboardExporter(object):
         """Downloads pinboard bookmarks in a given format"""
         export_page = PinboardExporter._EXPORT_BASE_PAGE + bookmark_format + '/'
         export_file = 'bookmarks.' + bookmark_format
-        export_path = os.path.join(directory, export_file)
-        with open(export_path, 'w') as output:
+        if directory != None:
+            export_file = os.path.join(directory, export_file)
+        with open(export_file, 'w') as output:
             resp = self.site.open(export_page)
             output.writelines(resp)
 
@@ -42,9 +53,14 @@ class PinboardExporter(object):
     _EXPORT_BASE_PAGE = 'http://pinboard.in/export/format:'
     _VALID_FORMATS = set(['html', 'json', 'xml'])
 
-def usage():
+    # Update the export_bookmarks docstring to include the currently supported
+    # formats
+    export_bookmarks.__doc__ += ', '.join(sorted(_VALID_FORMATS))
+
+
+def _usage():
     print """
-    Usage: pinboardExport.py OPTIONS
+    Usage: pinboard_exporter.py OPTIONS
 
     OPTIONS:
 
@@ -63,20 +79,19 @@ def usage():
 
     """
 
-def options(args):
+def _options(args):
     """Processes command line arguments"""
 
     try:
         opts, args = getopt.getopt(args, 'u:p:f:hd:',['username=','password=','formats=','help','directory='])
     except getopt.GetoptError, e:
         print str(e)
-        usage()
+        _usage()
         sys.exit(2)
 
     # Defaults
-    username = password = None
+    username = password = directory = None
     formats = set(['json'])
-    directory = os.getcwd()
     
     for o,v in opts:
         if o in ('-u', '--username'):
@@ -92,10 +107,10 @@ def options(args):
                 print "Destination directory does not exist."
                 sys.exit(2)
         elif o in ('-h', '--help'):
-            usage()
+            _usage()
             sys.exit(2)
         else:
-            usage()
+            _usage()
             sys.exit(2)
 
     # prompt for missing parameters if missing
@@ -107,6 +122,6 @@ def options(args):
     return (username, password, formats, directory)
 
 if __name__ == '__main__':
-    username, password, formats, directory = options(sys.argv[1:])
+    username, password, formats, directory = _options(sys.argv[1:])
     exporter = PinboardExporter(username,password)
     exporter.export_bookmarks(formats, directory)
