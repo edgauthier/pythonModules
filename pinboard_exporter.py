@@ -64,17 +64,17 @@ def _usage():
 
     OPTIONS:
 
-        -h | --help
+        -h
 
-        -u <username> | --username <username>
+        -u <username>
         
-        -p <password> | --password <password>
+        -p <password>
 
-        -f <formats>  | --formats <formats> 
+        -f <formats>
             A comma-separated list of formats to export. Defaults to json. 
             Valid options are: json, html, xml.
 
-        -d | --directory <directory>
+        -d <directory>
             Defaults to current directory.
 
     """
@@ -83,7 +83,7 @@ def _options(args):
     """Processes command line arguments"""
 
     try:
-        opts, args = getopt.getopt(args, 'u:p:f:hd:',['username=','password=','formats=','help','directory='])
+        opts, args = getopt.getopt(args, 'hu:p:f:d:')
     except getopt.GetoptError, e:
         print str(e)
         _usage()
@@ -94,19 +94,19 @@ def _options(args):
     formats = set(['json'])
     
     for o,v in opts:
-        if o in ('-u', '--username'):
+        if o == '-u':
             username = v
-        elif o in ('-p', '--password'):
+        elif o == '-p':
             password = v
-        elif o in ('-f', '--formats'):
+        elif o == '-f':
             formats = set(map(str.strip, v.split(',')))
-        elif o in ('-d', '--directory'):
+        elif o == '-d':
             if os.path.exists(v):
                 directory = v
             else:
                 print "Destination directory does not exist."
                 sys.exit(2)
-        elif o in ('-h', '--help'):
+        elif o == '-h':
             _usage()
             sys.exit(2)
         else:
