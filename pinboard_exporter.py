@@ -122,6 +122,10 @@ def _options(args):
     return (username, password, formats, directory)
 
 if __name__ == '__main__':
-    username, password, formats, directory = _options(sys.argv[1:])
-    exporter = PinboardExporter(username,password)
-    exporter.export_bookmarks(formats, directory)
+    try:
+        username, password, formats, directory = _options(sys.argv[1:])
+        exporter = PinboardExporter(username,password)
+        exporter.export_bookmarks(formats, directory)
+    except KeyboardInterrupt:
+        print "" # put prompt onto new line
+        sys.exit(2)
