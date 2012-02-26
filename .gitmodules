@@ -1,0 +1,3 @@
+[submodule "submodules/pfsense-backup"]
+	path = submodules/pfsense-backup
+	url = git@github.com:edgauthier/pfsense-backup.git
