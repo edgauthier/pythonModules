@@ -1,3 +1,6 @@
 [submodule "submodules/pfsense-backup"]
 	path = submodules/pfsense-backup
 	url = git@github.com:edgauthier/pfsense-backup.git
+[submodule "submodules/p4csv"]
+	path = submodules/p4csv
+	url = git@github.com:edgauthier/p4csv.git
