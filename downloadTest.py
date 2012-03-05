@@ -3,7 +3,7 @@
 import sys
 import os
 from datetime import datetime
-from fileHash import getHashDigestForFile
+from hash import getHashDigestForFile
 from urlparse import urlparse
 import posixpath
 from urllib import urlretrieve
