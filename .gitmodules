@@ -7,3 +7,6 @@
 [submodule "submodules/hash"]
 	path = submodules/hash
 	url = git@github.com:edgauthier/hash.git
+[submodule "submodules/download-test"]
+	path = submodules/download-test
+	url = git@github.com:edgauthier/download-test.git
