@@ -4,3 +4,6 @@
 [submodule "submodules/p4csv"]
 	path = submodules/p4csv
 	url = git@github.com:edgauthier/p4csv.git
+[submodule "submodules/hash"]
+	path = submodules/hash
+	url = git@github.com:edgauthier/hash.git
