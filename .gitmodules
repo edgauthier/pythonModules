@@ -13,3 +13,6 @@
 [submodule "submodules/p4changelog"]
 	path = submodules/p4changelog
 	url = git@github.com:edgauthier/p4changelog.git
+[submodule "submodules/pinboard_linkrot"]
+	path = submodules/pinboard_linkrot
+	url = git@github.com:edgauthier/pinboard_linkrot.git
