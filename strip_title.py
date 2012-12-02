@@ -8,6 +8,7 @@ def strip_title_line(path):
         lines = f.readlines()
         first_line = lines[0].rstrip()
         file_title,ext = os.path.splitext(os.path.basename(path))
+        file_title = file_title.rstrip()
 
     if first_line == file_title:
         i = 1
