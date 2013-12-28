@@ -6,6 +6,7 @@ import sys
 from datetime import datetime
 import os
 import time
+from cr2 import GetDateTimeFromCR2
 
 def main():
     if len(sys.argv) != 2:
@@ -24,7 +25,8 @@ def get_exif_data(fname):
                     decoded = TAGS.get(tag, tag)
                     ret[decoded] = value
     except IOError:
-        print 'IOERROR ' + fname
+        # print 'IOERROR getting exif data: ' + fname
+        pass
     return ret
 
 def get_exif_DateTimeOriginal(fname):
@@ -33,8 +35,18 @@ def get_exif_DateTimeOriginal(fname):
         return datetime.strptime(exif_data['DateTimeOriginal'], '%Y:%m:%d %H:%M:%S')
     return None
 
+def get_cr2_DateTimeOriginal(fname):
+    cr2_datetime = GetDateTimeFromCR2(fname)
+    if cr2_datetime != None:
+        return datetime.strptime(cr2_datetime, '%Y:%m:%d %H:%M:%S')
+    return None
+
 def process_file(fname):
     timestamp = get_exif_DateTimeOriginal(fname)
+    if timestamp == None:
+        (_,ext) = os.path.splitext(fname)
+        if str.lower(ext) == '.cr2':
+            timestamp = get_cr2_DateTimeOriginal(fname)
     if timestamp != None:
         set_file_timestamp(fname, timestamp)
 
