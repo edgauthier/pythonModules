@@ -3,11 +3,13 @@
 import sys, os
 from script_utils import get_password, run_command
 from tempfile import NamedTemporaryFile
+from time import sleep
 
 QPDF = '/usr/local/bin/qpdf'
 
 def main():
     in_file = sys.argv[1]
+    mtime = os.path.getmtime(in_file)
     # TODO test input file for access
     out_file =  get_temp_path()
     # TODO add validation to password method  throw exception if missing password
@@ -21,6 +23,9 @@ def main():
     else:
         # Move encrypted file to replace original file
         os.rename(out_file, in_file)
+    # Set modification time back to that of the original file
+    os.utime(in_file, (mtime,mtime))
+    sleep(3)
 
 def get_temp_path():
     f = NamedTemporaryFile(delete=False)
