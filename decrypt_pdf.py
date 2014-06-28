@@ -4,6 +4,7 @@ import sys, os
 from script_utils import get_password, run_command
 from tempfile import NamedTemporaryFile
 from time import sleep
+from getpass import getpass
 
 QPDF = '/usr/local/bin/qpdf'
 
@@ -14,6 +15,9 @@ def main():
     out_file =  get_temp_path()
     # TODO add validation to password method  throw exception if missing password
     password = get_password(account='encrypted_pdfs')
+    if len(sys.argv) == 3:
+        if sys.argv[2] == '-p':
+            password = getpass('Password: ')
     cmd = '{} --decrypt --password={} "{}" "{}"'.format(QPDF, password, in_file, out_file)
     cmd_output = run_command(cmd)
     if len(cmd_output) > 0:
@@ -33,7 +37,7 @@ def get_temp_path():
     return path
 
 if __name__ == '__main__':
-    if (len(sys.argv)) != 2:
-        print "Usage: encrypt_pdf.py in_file"
+    if (len(sys.argv)) > 3:
+        print "Usage: encrypt_pdf.py in_file [-p]"
         sys.exit(1)
     main()
