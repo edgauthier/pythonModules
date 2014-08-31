@@ -28,7 +28,7 @@ def main():
         # Move encrypted file to replace original file
         os.rename(out_file, in_file)
     os.utime(in_file, (mtime,mtime))
-    sleep(3)
+    sleep(1)
 
 def get_temp_path():
     f = NamedTemporaryFile(delete=False)

@@ -25,7 +25,7 @@ def main():
         os.rename(out_file, in_file)
     # Set modification time back to that of the original file
     os.utime(in_file, (mtime,mtime))
-    sleep(3)
+    sleep(1)
 
 def get_temp_path():
     f = NamedTemporaryFile(delete=False)
